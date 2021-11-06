@@ -1,6 +1,7 @@
-import sys, getopt
-import feedparser
 import os
+import sys, getopt
+import subprocess
+import feedparser
 import pytz
 from datetime import datetime, timedelta, timezone
 
@@ -53,13 +54,14 @@ def fetch (command, tracker, url):
         title = entry.title
         link = entry['link']
         updated = datetime.strptime(entry['published'], file_time_format)
-        if updated > most_recent_time:
-            most_recent_time = updated + timedelta(seconds=1)
         if updated > last_check_time :
             print (title + " " + link)
             cmd = command + " " + link
-            os.system(cmd)
-            count += 1
+            rc = os.system(cmd)
+            if rc == 0:
+                count += 1
+                if updated > most_recent_time:
+                    most_recent_time = updated + timedelta(seconds=1)
             
             
     return count, most_recent_time
