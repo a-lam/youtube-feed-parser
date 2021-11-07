@@ -1,0 +1,10 @@
+{
+    "sources": [{
+            "channel": "IGN Game Reviews",
+            "url": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLraFbwCoisJBTl0oXn8UoUam5HXWUZ7ES"
+        }, {
+            "channel": "Zero Puncutation",
+            "url": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLAbMhAYRuCUhawCEV2oXZGrienoKTN16X"
+        }
+    ]
+}
