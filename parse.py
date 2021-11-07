@@ -1,85 +1,60 @@
 import os
 import sys, getopt
-import subprocess
-import feedparser
-import pytz
+import file_util
+import xml_util
 from datetime import datetime, timedelta, timezone
 
-tracker_filename = ".ytdl_downloaded"
-file_time_format = "%Y-%m-%dT%H:%M:%S%z"
+def get_videos(command, channels, histories, days):
+    processed = 0
+    lookback = datetime.now(timezone.utc) - timedelta(days=days)
+    for channel in channels:
+        videos = channel['videos']
+        prev_videos = get_or_create_channel_history(histories, channel['url'])
+        for video in videos:
+            updated = datetime.strptime(video['updated'], file_util.TIME_FORMAT)
+            if lookback < updated:
+                if not video_in_history(prev_videos, video):
+                    get_video(command, video)
+                    processed += 1
 
-def parse (command, sources, history_path) :
-    video_retrieved = 0
+    print ('Processed ' + str(processed) + ' videos')
+    return
 
-    tracker_full_path = os.path.join(history_path, tracker_filename)
-    tracker = []
-    try:
-        with open(tracker_full_path, 'r') as file:
-            for line in file:
-                tracker.append(strip_newline(line))
-            file.close()
-    except:
-        pass
+def get_or_create_channel_history(histories, url):
+    for history in histories:
+        if history['url'] == url:
+            return history['videos']
 
-    out_tracker = []
-    file = open(sources, 'r')
-    for line in file:
-        line = strip_newline(line)
-        if line != "" and line[0] != "#" :
-            num_downloaded, most_recent = fetch(command, tracker, line)
-            out_tracker.append(line)
-            out_tracker.append(most_recent.strftime(file_time_format))
-            video_retrieved += num_downloaded
-    file.close()
+    new_history = {"url": url, "videos": []}
+    histories.append(new_history)
+    return new_history['videos']
 
-    file = open(tracker_full_path, 'w')
-    file.writelines("\n".join(out_tracker))
-    file.close()
-    print("{} videos downloaded".format(video_retrieved))
-	
-def fetch (command, tracker, url):
-    count = 0
-    now = datetime.now(timezone.utc)
-    last_check_time = now - timedelta(days=3)
-    most_recent_time = datetime.min.replace(tzinfo=pytz.utc)
+def video_in_history(prev_videos, new_video):
+    for video in prev_videos:
+        if video['link'] == new_video['link']:
+            return True
 
-    try:
-        i = tracker.index(url)
-        last_check_time = datetime.strptime(tracker[i+1], file_time_format)
-    except:
-        pass
+    prev_videos.append(new_video)
+    return False
 
-    NewsFeed = feedparser.parse(url)
-    for entry in NewsFeed.entries :
-        title = entry.title
-        link = entry['link']
-        updated = datetime.strptime(entry['published'], file_time_format)
-        if updated > last_check_time :
-            print (title + " " + link)
-            cmd = command + " " + link
-            rc = os.system(cmd)
-            if rc == 0:
-                count += 1
-                if updated > most_recent_time:
-                    most_recent_time = updated + timedelta(seconds=1)
-            
-            
-    return count, most_recent_time
-		
-def strip_newline(str):
-    try:
-        i = str.index("\n")
-        return str[:i]
-    except:
-        pass
-    return str
+def get_video(command, video):
+    title = video['title']
+    link = video['link']
+    print (title + " " + link)
+    cmd = command + " " + link
+    rc = os.system(cmd)
+    if rc == 0:
+        return True
+    return False
+
 
 def main(argv):
     command = ''
     sources = ''
     history = ''
+    days = 3
     try:
-        opts, args = getopt.getopt(argv,'',['command=','sources=','history='])
+        opts, args = getopt.getopt(argv,'',['command=','sources=','history=','days='])
     except getopt.GetoptError:
         print ('parse.py --command <cmd> --sources <sources> --history <folder>')
         sys.exit(2)
@@ -90,8 +65,14 @@ def main(argv):
             sources = arg
         elif opt == '--history':
             history = arg
+        elif opt == '--days':
+            days = int(arg)
 
-    parse(command, sources, history)
+    urls = file_util.get_sources(sources)
+    feed_videos = xml_util.get_videos(urls)
+    processed = file_util.get_history(history)
+    get_videos(command, feed_videos, processed, days)
+    file_util.set_history(history, processed)
     return
 
 
