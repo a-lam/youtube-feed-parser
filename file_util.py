@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime, timedelta, timezone
 
 HISTORY_FILENAME = 'youtube-feed-parser.history.json'
 TIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
@@ -24,6 +25,14 @@ def get_history(history_path):
     return []
 
 def set_history(history_path, history):
+    # Only keep 30 days of history, to keep the file size and processing under control
+    lookback = datetime.now(timezone.utc) - timedelta(days=30)
+    for channel in history:
+        videos = channel['videos']
+        filtered = filter(lambda v: lookback < datetime.strptime(v['updated'], TIME_FORMAT), videos)
+        new_vids = list(filtered)
+        channel['videos'] = new_vids
+    
     history_fullpath = os.path.join(history_path, HISTORY_FILENAME)
     data = { "history": history }
     with open(history_fullpath, 'w') as myFile:
