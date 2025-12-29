@@ -57,8 +57,9 @@ def main(argv):
     sources = ''
     history = ''
     days = 3
+    channelName = ''
     try:
-        opts, args = getopt.getopt(argv,'',['command=','sources=','history=','days='])
+        opts, args = getopt.getopt(argv,'',['command=','sources=','history=','days=','add-channel='])
     except getopt.GetoptError:
         print ('parse.py --command <cmd> --sources <sources> --history <folder>')
         sys.exit(2)
@@ -71,7 +72,15 @@ def main(argv):
             history = arg
         elif opt == '--days':
             days = int(arg)
+        elif opt == '--add-channel':
+            channelName = arg
 
+    if channelName:
+        # Separate execution path: add channel to sources file
+        file_util.add_channel_to_sources(sources, channelName)
+        return
+
+    # Normal execution path: process videos
     urls = file_util.get_sources(sources)
     feed_videos = xml_util.get_videos(urls)
     processed = file_util.get_history(history)
