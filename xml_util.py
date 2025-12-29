@@ -2,10 +2,18 @@ import urllib.request
 import xml.etree.ElementTree as ET
 
 def get_videos_from_feed(url):
-    with urllib.request.urlopen(url) as response:
-        xml_data = response.read()
-    
-    root = ET.fromstring(xml_data)
+    try:
+        with urllib.request.urlopen(url) as response:
+            xml_data = response.read()
+    except Exception as e:
+        print(f"Could not retrieve data from {url}: {e}")
+        return {"url": url, "videos": []}
+
+    try:
+        root = ET.fromstring(xml_data)
+    except Exception as e:
+        print(f"Could not parse XML from {url}: {e}")
+        return {"url": url, "videos": []}
     
     # Define namespaces for Atom/RSS feeds
     namespaces = {
