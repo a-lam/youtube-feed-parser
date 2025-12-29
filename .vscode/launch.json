@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "Run Parse",
+            "program": "${workspaceFolder}\\parse.py",
+            "args": [
+                "--command", "ytdl.bat",
+                "--sources", "C:\\data\\youtube-feed-parser\\sample-sources.json",
+                "--history", "C:\\data\\youtube-feed-parser"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "C:\\data\\youtube-feed-parser\\videos"
+        }
+    ]
+}

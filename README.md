@@ -1,9 +1,8 @@
 # Youtube-Feed-Parser
-This tool takes in a list of Youtube channels or playlists and executes a command against the videos found. This tool can be used in conjunction with downloaders such as [youtube-dl](https://github.com/ytdl-org/youtube-dl) or other forks of the project.
+This tool takes in a list of Youtube channels or playlists and executes a command against the videos found. This tool can be used in conjunction with downloaders such as [yt-dlp](https://github.com/yt-dlp/yt-dlp) or other forks of the project.
 
 ## Requirements
 - [Python](https://www.python.org/downloads/) 3.0+
-- [FeedParser](https://pypi.org/project/feedparser/)
 
 ## Usage
 1. Download the application.

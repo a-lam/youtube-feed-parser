@@ -1,5 +1,6 @@
 import os
 import sys, getopt
+import subprocess
 import file_util
 import xml_util
 from datetime import datetime, timedelta, timezone
@@ -41,10 +42,13 @@ def get_video(command, video):
     title = video['title']
     link = video['link']
     print (title + " " + link)
-    cmd = command + " " + link
-    rc = os.system(cmd)
-    if rc == 0:
-        return True
+    cmd = f'{command} "{link}"'
+    try:
+        rc = subprocess.call(cmd, shell=True)
+        if rc == 0:
+            return True
+    except Exception as e:
+        print(f"Error executing command: {e}")
     return False
 
 
