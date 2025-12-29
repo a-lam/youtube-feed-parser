@@ -8,12 +8,11 @@ This tool takes in a list of Youtube channels or playlists and executes a comman
 1. Download the application.
     ```
     curl -L https://github.com/a-lam/youtube-feed-parser/archive/refs/heads/main.zip --output main.zip
-    unzip main.zip
     ```
 1. Prepare the sources file.
 1. Execute the tool.
     ```
-    python parse.py --command CMD --sources SOURCE_FILE --history HISTORY_FOLDER
+    python main.zip --command CMD --sources SOURCE_FILE --history HISTORY_FOLDER
     ```
 
 ### Arguments
