@@ -1,0 +1,16 @@
+.vscode/
+__pycache__/
+*.py[cod]
+*.pyo
+# Byte-compiled / optimized / DLL files
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+.vscode/launch.json

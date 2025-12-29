@@ -5,9 +5,9 @@
             "type": "debugpy",
             "request": "launch",
             "name": "Run Parse",
-            "program": "${workspaceFolder}\\parse.py",
+            "program": "${workspaceFolder}\\__main__.py",
             "args": [
-                "--command", "ytdl.bat",
+                "--command", "ytdl",
                 "--sources", "C:\\data\\youtube-feed-parser\\sample-sources.json",
                 "--history", "C:\\data\\youtube-feed-parser"
             ],
