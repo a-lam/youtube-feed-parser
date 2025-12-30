@@ -20,6 +20,7 @@ This tool takes in a list of Youtube channels or playlists and executes a comman
     --sources FILE              File that contains the URLs of channels/playlists. (Required)
     --history FOLDER            Folder to store the history of processed videos. (Required)
     --days NUMBER               How old a video's published date can be to be processed. (Default=3)
+    --add-channel CHANNEL       Channel name to add to the sources file (Using this parameter will not download files)
 
 ## Preparing Sources
 The sources file is a list of URLs for the tool to fetch videos from. The sample-sources.json file contains an example of what this file may look like. It contains a json object with a single key/value pair of "sources" which is a list. Each item in the list is another json object with two keys "channel" and "url". "channel" is only used for readability, the tool does not use this value. "url" is a direct link to the channel or playlist's XML feed.
